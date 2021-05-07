@@ -1,7 +1,7 @@
 {:navgroup: .navgroup}
 {:topicgroup: .topicgroup}
 
-{: .toc subcollection="key-protect-cli-plugin" audience="cli" href="/docs/key-protect-cli-plugin?topic=key-protect-cli-reference" path="key-protect-cli-plugin"}
+{: .toc subcollection="key-protect-cli-plugin" audience="cli" href="/docs/key-protect-cli-plugin?topic=key-protect-cli-plugin-key-protect-cli-reference" path="key-protect-cli-plugin"}
 Key Protect CLI
 
     {: .navgroup id="reference"}
