@@ -1,0 +1,9 @@
+{:navgroup: .navgroup}
+{:topicgroup: .topicgroup}
+
+{: .toc subcollection="key-protect-cli-plugin" audience="cli" href="/docs/key-protect-cli-plugin?topic=key-protect-cli-reference" path="key-protect-cli-plugin"}
+Key Protect CLI
+
+    {: .navgroup id="reference"}
+    key-protect-cli-commands.md
+    {: .navgroup-end}
