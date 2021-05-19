@@ -2,9 +2,9 @@
 
 copyright:
   years: 2017, 2021
-lastupdated: "2021-05-06"
+lastupdated: "2021-05-20"
 
-keywords: Key Protect CLI plug-in, CLI reference, version 0.6.1
+keywords: Key Protect CLI plug-in, CLI reference, version 0.6.2
 
 subcollection: key-protect
 
@@ -27,7 +27,7 @@ subcollection: key-protect
 The latest version of the {{site.data.keyword.keymanagementservicefull}} CLI plug-in provides a safe and efficient way to manage keys in your instance of {{site.data.keyword.keymanagementserviceshort}}.
 {: shortdesc}
 
-To install version 0.6.1 of the {{site.data.keyword.keymanagementserviceshort}} CLI plug-in, see
+To install version 0.6.2 of the {{site.data.keyword.keymanagementserviceshort}} CLI plug-in, see
 [Setting up the CLI](/docs/key-protect?topic=key-protect-set-up-cli).
 
 When you log in to the
@@ -46,7 +46,7 @@ The example showing how to use [**`region-set`**](#kp-region-set-examples) outli
 ### Previous versions
 {: #cli-reference-previous}
 
-This documentation for version 0.6.1 does not include deprecated commands.
+This documentation for version 0.6.2 does not include deprecated commands.
 
 [Version 0.3.9](/docs/key-protect?topic=key-protect-cli-reference-039)
 has documentation for deprecated commands.
@@ -84,7 +84,7 @@ $ export KP_INSTANCE_ID=<INSTANCE_ID>
 
 The **`kp import-token`** command prepares a root key for secure import.
 
-| Sub-command                                     | Status v0.6.1 | Description |
+| Sub-command                                     | Status v0.6.2 | Description |
 | ----------------------------------------------- | ------------- | ----------- |
 | [create](#kp-import-token-create)               |               | Create an import token |
 | [key-encrypt](#kp-import-token-key-encrypt)     |         | Encrypt the key that you import into the service |
@@ -98,7 +98,7 @@ The **`kp import-token`** command prepares a root key for secure import.
 The **`kp instance`** command manages policies for a
 {{site.data.keyword.keymanagementserviceshort}} instance.
 
-| Sub-command                                                         | Status v0.6.1 | Description |
+| Sub-command                                                         | Status v0.6.2 | Description |
 | ------------------------------------------------------------------- | ------------- | ----------- |
 | [policies](#kp-instance-policies)                                   |            | List policies associated with an instance |
 | policy-update [allowed-network](#kp-instance-policy-update-allowed) |            | Update the instance policy for "allowed network" |
@@ -110,16 +110,17 @@ The **`kp instance`** command manages policies for a
 
 The **`kp key`** command manages individual keys.
 
-| Sub-command                                                  | Status v0.6.1 | Description |
+| Sub-command                                                  | Status v0.6.2 | Description |
 | ------------------------------------------------------------ | ------------- | ----------- |
 | [cancel-delete](#kp-key-cancel-delete)                       |            | Cancel a previously scheduled request to delete a key |
 | [create](#kp-key-create)                                     |               | Create a key or import your own key |
-| [delete](#kp-key-delete)                                     |               | Delete a key permanently |
+| [delete](#kp-key-delete)                                     |               | Delete a key |
 | [disable](#kp-key-disable)                                   |            | Disable a key |
 | [enable](#kp-key-enable)                                     |            | Enable a key |
 | [policies](#kp-key-policies)                                 |               | Retrieve a list of policies |
 | policy-update [dual-auth-delete](#kp-key-policy-update-dual) |         | Update the key policy for "dual auth delete" |
 | policy-update [rotation](#kp-key-policy-update-rotation)     |         | Update the key polcy for "rotation" |
+| [purge](#kp-key-purge)                                       | new     | Purge a deleted key |
 | [restore](#kp-key-restore)                                   |            | Restore a root key that was previously deleted |
 | [rotate](#kp-key-rotate)                                     |               | Rotate a root key |
 | [schedule-delete](#kp-key-schedule-delete)                   |            | Authorize a key, with a dual-auth-delete policy, to be deleted |
@@ -2057,6 +2058,34 @@ $ ibmcloud kp key policies $KEY_ID --output json
 
    A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
 
+## kp key purge
+{: #kp-key-purge}
+
+This command purges a deleted key (that has been in a `destroyed` state for at least four hours). The information related to that key is permanently deleted and the key is not available to be restored.
+
+```
+ibmcloud kp key purge <keyID>
+```
+{: pre}
+
+
+### Example
+{: #kp-key-restore-example}
+
+
+```
+ibmcloud kp key purge c2b3c024-aabb-46e5-2093-c14e44fdf8cb
+```
+{: codeblock}
+
+### Required parameters
+{: #kp-key-purge-rotation-required}
+
+* **`KEY_ID`**
+
+   The ID of the key that you want to query. To retrieve a list of your
+    available keys, run the [kp keys](#kp-keys) command.
+
 ## kp key restore
 {: #kp-key-restore}
 
@@ -3621,14 +3650,16 @@ $ ibmcloud kp region-set
 
 Select a Region:
 1. au-syd
-2. eu-de
-3. eu-fr2 (available by request)
-4. eu-gb
-5. jp-tok
-6. us-east
-7. us-south
-8. staging (us-south)
-Enter a number:
+2. ca-tor
+3. eu-de
+4. eu-fr2 (available by request)
+5. eu-gb
+6. jp-osa
+7. jp-tok
+8. us-east
+9. us-south
+10. staging (us-south)
+Enter a number: 
 5
 OK
 ```
