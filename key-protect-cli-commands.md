@@ -2,9 +2,9 @@
 
 copyright:
   years: 2017, 2021
-lastupdated: "2021-05-20"
+lastupdated: "2021-06-25"
 
-keywords: Key Protect CLI plug-in, CLI reference, version 0.6.2
+keywords: Key Protect CLI plug-in, CLI reference, version 0.6.3
 
 subcollection: key-protect
 
@@ -27,7 +27,7 @@ subcollection: key-protect
 The latest version of the {{site.data.keyword.keymanagementservicefull}} CLI plug-in provides a safe and efficient way to manage keys in your instance of {{site.data.keyword.keymanagementserviceshort}}.
 {: shortdesc}
 
-To install version 0.6.2 of the {{site.data.keyword.keymanagementserviceshort}} CLI plug-in, see
+To install version 0.6.3 of the {{site.data.keyword.keymanagementserviceshort}} CLI plug-in, see
 [Setting up the CLI](/docs/key-protect?topic=key-protect-set-up-cli).
 
 When you log in to the
@@ -46,7 +46,7 @@ The example showing how to use [**`region-set`**](#kp-region-set-examples) outli
 ### Previous versions
 {: #cli-reference-previous}
 
-This documentation for version 0.6.2 does not include deprecated commands.
+This documentation for version 0.6.3 does not include deprecated commands.
 
 [Version 0.3.9](/docs/key-protect?topic=key-protect-cli-reference-039)
 has documentation for deprecated commands.
@@ -66,7 +66,7 @@ and
 [jq](https://stedolan.github.io/jq/){: external}
 installed.
 
-Many examples take advantage of an environment variable set for the session regarding the {{site.data.keyword.keymanagementserviceshort}} instance instead of the `-i` parameter.
+Many examples take advantage of an environment variable set for the session regarding the {{site.data.keyword.keymanagementserviceshort}} Instance ID instead of the `-i` parameter. Variables set in this manner will be automatically used by the plug-in where appropriate and when needed.
 
 ```sh
 # export the Key Protect instance id in the command line
@@ -126,7 +126,7 @@ The **`kp key`** command manages individual keys.
 | [schedule-delete](#kp-key-schedule-delete)                   |            | Authorize a key, with a dual-auth-delete policy, to be deleted |
 | [show](#kp-key-show)                                         |         | Retrieve a key |
 | [unwrap](#kp-key-unwrap)                                     |               | Unwrap a data encryption key |
-| [update](#kp-key-update)                                     |       new     | Update a key, transferring it to a new key ring |
+| [update](#kp-key-update)                                     |            | Update a key, transferring it to a new key ring |
 | [wrap](#kp-key-wrap)                                         |               | Wrap a data encryption key |
 {: caption="Table 3. Sub-commands for managing keys" caption-side="bottom"}
 
@@ -899,6 +899,7 @@ ibmcloud kp key create KEY_NAME
     [-n, --encrypted-nonce NONCE]
     [-o, --output          OUTPUT]
     [-s, --standard-key]
+    [--sha1]
     [-v, --iv              IV]
 ```
 {: pre}
@@ -1135,6 +1136,10 @@ $ echo $PAYLOAD | base64 -d
 
    To generate a new key, omit the `-k, --key-material` parameter.
 
+* **`--key-ring`**
+
+   A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
+
 * **`-n, --encrypted-nonce`**
 
    **Used with import tokens.** The encrypted nonce value that verifies your request to import a key to {{site.data.keyword.keymanagementserviceshort}}. This value must be encrypted by using the key material that you import into the service. See `ibmcloud kp import-token --help`.
@@ -1155,9 +1160,10 @@ $ echo $PAYLOAD | base64 -d
 
    To generate an IV, encrypt the nonce by running `ibmcloud kp import-token nonce-encrypt`.
 
-* **`--key-ring`**
+* **`--sha1`**
 
-   A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
+   Sets the encryption algorithm to RSAES_OAEP_SHA_1. This is specific to HPCS only.
+
 
 ## kp key delete
 {: #kp-key-delete}
@@ -2506,6 +2512,10 @@ ibmcloud kp key rotate KEY_ID
      -i, --instance-id  INSTANCE_ID
     [--key-ring		   KEY_RING_ID]
     [-k, --key-material KEY_MATERIAL]
+    [-o, --output JSON]
+    [-n, --encrypted-nonce]
+    [-v, --iv]
+    [--sha1]
 ```
 {: pre}
 
@@ -2709,6 +2719,27 @@ $ ibmcloud kp key unwrap $KEY_ID $NEWCIPHERTEXT --output json
 * **`--key-ring`**
 
    A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
+   
+* **`-n, --encrypted-nonce`**
+
+   In the event it's required, rotate a key by providing the original encrypted nonce.
+
+   For more information, see [kp import-token nonce-encrypt](#kp-import-token-nonce-encrypt).
+
+* **`-o, --output`**
+
+   Set the CLI output format. By default, all commands print in table format.
+    To change the output format to JSON, use `--output json`.
+
+* **`-v, --iv`**
+
+   Provide the initialization vector (IV) that is generated after you encrypt a nonce.
+
+   For more information, see [kp import-token nonce-encrypt](#kp-import-token-nonce-encrypt).
+
+* **`--sha1`**
+
+   Sets the encryption algorithm to RSAES_OAEP_SHA_1. This is specific to HPCS only.
 
 ## kp key schedule-delete
 {: #kp-key-schedule-delete}
