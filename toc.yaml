@@ -2,7 +2,7 @@ toc:
   properties:
     subcollection: key-protect-cli-plugin
     category: security
-    audience: cli
+    audience: service
     href: /docs/key-protect-cli-plugin?topic=key-protect-cli-plugin-key-protect-cli-reference
     console-page: /catalog/services/key-protect
     product-page: https://ibm.com/cloud/key-protect
@@ -12,4 +12,4 @@ toc:
   - navgroup: 
       id: reference
       topics:
-        key-protect-cli-commands.md
+      -  key-protect-cli-commands.md
