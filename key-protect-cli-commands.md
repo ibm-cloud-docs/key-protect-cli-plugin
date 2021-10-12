@@ -2,9 +2,9 @@
 
 copyright:
   years: 2017, 2021
-lastupdated: "2021-06-25"
+lastupdated: "2021-10-11"
 
-keywords: Key Protect CLI plug-in, CLI reference, version 0.6.3
+keywords: Key Protect CLI plug-in, CLI reference, version 0.6.6
 
 subcollection: key-protect
 
@@ -27,7 +27,7 @@ subcollection: key-protect
 The latest version of the {{site.data.keyword.keymanagementservicefull}} CLI plug-in provides a safe and efficient way to manage keys in your instance of {{site.data.keyword.keymanagementserviceshort}}.
 {: shortdesc}
 
-To install version 0.6.3 of the {{site.data.keyword.keymanagementserviceshort}} CLI plug-in, see
+To install version 0.6.6 of the {{site.data.keyword.keymanagementserviceshort}} CLI plug-in, see
 [Setting up the CLI](/docs/key-protect?topic=key-protect-set-up-cli).
 
 When you log in to the
@@ -46,7 +46,7 @@ The example showing how to use [**`region-set`**](#kp-region-set-examples) outli
 ### Previous versions
 {: #cli-reference-previous}
 
-This documentation for version 0.6.3 does not include deprecated commands.
+This documentation for version 0.6.6 does not include deprecated commands.
 
 [Version 0.3.9](/docs/key-protect?topic=key-protect-cli-reference-039)
 has documentation for deprecated commands.
@@ -84,7 +84,7 @@ $ export KP_INSTANCE_ID=<INSTANCE_ID>
 
 The **`kp import-token`** command prepares a root key for secure import.
 
-| Sub-command                                     | Status v0.6.2 | Description |
+| Sub-command                                     | Status v0.6.6 | Description |
 | ----------------------------------------------- | ------------- | ----------- |
 | [create](#kp-import-token-create)               |               | Create an import token |
 | [key-encrypt](#kp-import-token-key-encrypt)     |         | Encrypt the key that you import into the service |
@@ -98,7 +98,7 @@ The **`kp import-token`** command prepares a root key for secure import.
 The **`kp instance`** command manages policies for a
 {{site.data.keyword.keymanagementserviceshort}} instance.
 
-| Sub-command                                                         | Status v0.6.2 | Description |
+| Sub-command                                                         | Status v0.6.6 | Description |
 | ------------------------------------------------------------------- | ------------- | ----------- |
 | [policies](#kp-instance-policies)                                   |            | List policies associated with an instance |
 | policy-update [allowed-network](#kp-instance-policy-update-allowed) |            | Update the instance policy for "allowed network" |
@@ -110,7 +110,7 @@ The **`kp instance`** command manages policies for a
 
 The **`kp key`** command manages individual keys.
 
-| Sub-command                                                  | Status v0.6.2 | Description |
+| Sub-command                                                  | Status v0.6.6 | Description |
 | ------------------------------------------------------------ | ------------- | ----------- |
 | [cancel-delete](#kp-key-cancel-delete)                       |            | Cancel a previously scheduled request to delete a key |
 | [create](#kp-key-create)                                     |               | Create a key or import your own key |
@@ -120,11 +120,12 @@ The **`kp key`** command manages individual keys.
 | [policies](#kp-key-policies)                                 |               | Retrieve a list of policies |
 | policy-update [dual-auth-delete](#kp-key-policy-update-dual) |         | Update the key policy for "dual auth delete" |
 | policy-update [rotation](#kp-key-policy-update-rotation)     |         | Update the key polcy for "rotation" |
-| [purge](#kp-key-purge)                                       | new     | Purge a deleted key |
+| [purge](#kp-key-purge)                                       |         | Purge a deleted key |
 | [restore](#kp-key-restore)                                   |            | Restore a root key that was previously deleted |
 | [rotate](#kp-key-rotate)                                     |               | Rotate a root key |
 | [schedule-delete](#kp-key-schedule-delete)                   |            | Authorize a key, with a dual-auth-delete policy, to be deleted |
 | [show](#kp-key-show)                                         |         | Retrieve a key |
+| [sync](#kp-key-sync)                                         | new           | Synchronize a key's associated resources |
 | [unwrap](#kp-key-unwrap)                                     |               | Unwrap a data encryption key |
 | [update](#kp-key-update)                                     |            | Update a key, transferring it to a new key ring |
 | [wrap](#kp-key-wrap)                                         |               | Wrap a data encryption key |
@@ -135,7 +136,7 @@ The **`kp key`** command manages individual keys.
 
 Key Ring support allows for managing groups of keys for best practices using **`kp key-ring`**.
 
-| Sub-command                                                  | Status v0.6.1 | Description |
+| Sub-command                                                  | Status v0.6.6 | Description |
 | ------------------------------------------------------------ | ------------- | ----------- |
 | [create](#kp-key-ring-create)                       |     | Creates a key ring within a kp instance |
 | [delete](#kp-key-ring-delete)                       |     | Deletes a key ring within a kp instance |
@@ -147,7 +148,7 @@ Key Ring support allows for managing groups of keys for best practices using **`
 More commands for managing
 {{site.data.keyword.keymanagementserviceshort}} resources could support best practices.
 
-| Command                               | Status v0.6.1 | Description |
+| Command                               | Status v0.6.6 | Description |
 | ------------------------------------- | ------------- | ----------- |
 | [kp keys](#kp-keys)                   |               | List the keys that are available in your {{site.data.keyword.keymanagementserviceshort}} instance |
 | [kp key-rings](#kp-key-rings)        |            | Lists the key rings associated with the kp instance |
@@ -833,9 +834,7 @@ Follow this process to delete a key with a `dual-auth-delete` policy.
 There are two ways to enable the `dual-auth-delete` policy:
 
 - Set the policy for a single key using `kp key policy-update dual-auth-delete`
-- Set the policy for the instance using
-  `kp instance policy-update dual-auth-delete`; all keys created after the
-  instance policy is enabled inherit the instance policy setting
+- Set the policy for the instance using `kp instance policy-update dual-auth-delete`; all keys created after the instance policy is enabled inherit the instance policy setting
 
 ```sh
 ibmcloud kp key cancel-delete KEY_ID
@@ -1728,7 +1727,7 @@ Key policies are
 and
 [rotation](#kp-key-policy-update-rotation).
 
-```sh
+```sh 
 # create a root key
 $ KEY_ID=$(ibmcloud kp key create my-root-key --output json | jq -r '.["id"]')
 
@@ -1784,7 +1783,7 @@ $ ibmcloud kp key policies $KEY_ID --output json
     }
   }
 ]
-```
+``` 
 {: screen}
 
 ### Required parameters
@@ -1792,14 +1791,13 @@ $ ibmcloud kp key policies $KEY_ID --output json
 
 * **`KEY_ID`**
 
-   The ID of the key that you want to query. To retrieve a list of your
-    available keys, run the [kp keys](#kp-keys) command.
+   The ID of the key that you want to query. To retrieve a list of your available keys, run the [kp keys](#kp-keys) command.
 
 * **`-i, --instance-id`**
 
    The {{site.data.keyword.cloud_notm}} instance ID that identifies your {{site.data.keyword.keymanagementserviceshort}} instance.
 
-  You can set an environment variable instead of specifying `-i` with the following command: **`$ export KP_INSTANCE_ID=<INSTANCE_ID>`**.
+   You can set an environment variable instead of specifying `-i` with the following command: **`$ export KP_INSTANCE_ID=<INSTANCE_ID>`**.
 
 ### Optional parameters
 {: #kp-key-policies-optional}
@@ -2069,7 +2067,7 @@ $ ibmcloud kp key policies $KEY_ID --output json
 
 This command purges a deleted key (that has been in a `destroyed` state for at least four hours). The information related to that key is permanently deleted and the key is not available to be restored.
 
-```
+```sh 
 ibmcloud kp key purge <keyID>
 ```
 {: pre}
@@ -2079,7 +2077,7 @@ ibmcloud kp key purge <keyID>
 {: #kp-key-restore-example}
 
 
-```
+```sh 
 ibmcloud kp key purge c2b3c024-aabb-46e5-2093-c14e44fdf8cb
 ```
 {: codeblock}
@@ -2765,13 +2763,9 @@ Follow this process to delete a key with a `dual-auth-delete` policy.
 There are two ways to enable the `dual-auth-delete` policy:
 
 - Set the policy for a single key using `kp key policy-update dual-auth-delete`
-- Set the policy for the instance using
-  `kp instance policy-update dual-auth-delete`; all keys created after the
-  instance policy is enabled inherit the instance policy setting
+- Set the policy for the instance using `kp instance policy-update dual-auth-delete`; all keys created after the instance policy is enabled inherit the instance policy setting
 
-The
-[kp key cancel-delete](#kp-key-cancel-delete)
-command cancels, or removes, a prior authorization.
+The [kp key cancel-delete](#kp-key-cancel-delete) command cancels, or removes, a prior authorization.
 
 ```sh
 ibmcloud kp key schedule-delete KEY_ID
@@ -2930,6 +2924,63 @@ $ ibmcloud kp key show 8635b804-9966-4918-a16b-d561fdbf181f --output json
 
 ### Optional parameters
 {: #kp-key-show-optional}
+
+* **`-o, --output`**
+
+   Set the CLI output format. By default, all commands print in table format. To change the output format to JSON, use `--output json`.
+
+* **`--key-ring`**
+
+   A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
+
+## kp key sync
+{: #kp-key-sync}
+
+This subcommand synchronizes the associated resources for a key.
+
+```sh
+ibmcloud kp key sync KEY_ID
+     -i, --instance-id INSTANCE_ID
+    [--key-ring		     KEY_RING_ID]
+    [-o, --output      FORMAT]
+```
+{: pre}
+
+### Examples
+{: #kp-key-sync-examples}
+
+This is an example of `kp key sync`.
+
+#### Example
+{: #kp-key-sync-example}
+
+Synchronize a key and show the results.
+
+```sh
+# synchronize the associated resources for a given key
+$ ibmcloud kp key sync 94c06f9c-a07a-4961-8548-553cf7431f18
+
+Synchronizing key...
+OK
+Key's associated resources are synchronized successfully
+```
+{: screen}
+
+### Required parameters
+{: #kp-key-sync-required}
+
+* **`KEY_ID`**
+
+   The ID of the key that you want to sync.
+
+* **`-i, --instance-id`**
+
+   The {{site.data.keyword.cloud_notm}} instance ID that identifies your {{site.data.keyword.keymanagementserviceshort}} instance.
+
+   You can set an environment variable instead of specifying `-i` with the following command: **`$ export KP_INSTANCE_ID=<INSTANCE_ID>`**.
+
+### Optional parameters
+{: #kp-key-sync-optional}
 
 * **`-o, --output`**
 
