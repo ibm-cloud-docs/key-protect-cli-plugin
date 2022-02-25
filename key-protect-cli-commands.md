@@ -2,9 +2,9 @@
 
 copyright:
   years: 2017, 2022
-lastupdated: "2022-01-06"
+lastupdated: "2022-02-22"
 
-keywords: Key Protect CLI plug-in, CLI reference, version 0.6.9
+keywords: Key Protect CLI plug-in, CLI reference, version 0.6.10
 
 subcollection: key-protect
 
@@ -28,7 +28,7 @@ subcollection: key-protect
 The latest version of the {{site.data.keyword.keymanagementservicefull}} CLI plug-in provides a safe and efficient way to manage keys in your instance of {{site.data.keyword.keymanagementserviceshort}}.
 {: shortdesc}
 
-To install version 0.6.9 of the {{site.data.keyword.keymanagementserviceshort}} CLI plug-in, see
+To install the {{site.data.keyword.keymanagementserviceshort}} CLI plug-in, see
 [Setting up the CLI](/docs/key-protect?topic=key-protect-set-up-cli).
 
 When you log in to the
@@ -47,7 +47,7 @@ The example showing how to use [**`region-set`**](#kp-region-set-examples) outli
 ### Previous versions
 {: #cli-reference-previous}
 
-This documentation for version 0.6.9 does not include deprecated commands.
+This documentation for version 0.6.10 does not include deprecated commands.
 
 [Version 0.3.9](/docs/key-protect?topic=key-protect-cli-reference-039)
 has documentation for deprecated commands.
@@ -85,7 +85,7 @@ $ export KP_INSTANCE_ID=<INSTANCE_ID>
 
 The **`kp import-token`** command prepares a root key for secure import.
 
-| Sub-command                                     | Status v0.6.9 | Description |
+| Sub-command                                     | Status v0.6.10 | Description |
 | ----------------------------------------------- | ------------- | ----------- |
 | [create](#kp-import-token-create)               |               | Create an import token |
 | [key-encrypt](#kp-import-token-key-encrypt)     |         | Encrypt the key that you import into the service |
@@ -99,7 +99,7 @@ The **`kp import-token`** command prepares a root key for secure import.
 The **`kp instance`** command manages policies for a
 {{site.data.keyword.keymanagementserviceshort}} instance.
 
-| Sub-command                                                         | Status v0.6.9 | Description |
+| Sub-command                                                         | Status v0.6.10 | Description |
 | ------------------------------------------------------------------- | ------------- | ----------- |
 | [policies](#kp-instance-policies)                                   |            | List policies associated with an instance |
 | policy-update [allowed-network](#kp-instance-policy-update-allowed) |            | Update the instance policy for "allowed network" |
@@ -111,7 +111,7 @@ The **`kp instance`** command manages policies for a
 
 The **`kp key`** command manages individual keys.
 
-| Sub-command                                                  | Status v0.6.9 | Description |
+| Sub-command                                                  | Status v0.6.10 | Description |
 | ------------------------------------------------------------ | ------------- | ----------- |
 | [cancel-delete](#kp-key-cancel-delete)                       |            | Cancel a previously scheduled request to delete a key |
 | [create](#kp-key-create)                                     |               | Create a key or import your own key |
@@ -137,7 +137,7 @@ The **`kp key`** command manages individual keys.
 
 Key Ring support allows for managing groups of keys for best practices using **`kp key-ring`**.
 
-| Sub-command                                                  | Status v0.6.9 | Description |
+| Sub-command                                                  | Status v0.6.10 | Description |
 | ------------------------------------------------------------ | ------------- | ----------- |
 | [create](#kp-key-ring-create)                       |     | Creates a key ring within a kp instance |
 | [delete](#kp-key-ring-delete)                       |     | Deletes a key ring within a kp instance |
@@ -149,7 +149,7 @@ Key Ring support allows for managing groups of keys for best practices using **`
 More commands for managing
 {{site.data.keyword.keymanagementserviceshort}} resources could support best practices.
 
-| Command                               | Status v0.6.9 | Description |
+| Command                               | Status v0.6.10 | Description |
 | ------------------------------------- | ------------- | ----------- |
 | [kp keys](#kp-keys)                   |               | List the keys that are available in your {{site.data.keyword.keymanagementserviceshort}} instance |
 | [kp key-rings](#kp-key-rings)        |            | Lists the key rings associated with the kp instance |
@@ -221,22 +221,22 @@ $ ibmcloud kp import-token show
 
 * **`-i, --instance-id`**
 
-   The {{site.data.keyword.cloud_notm}} instance ID that identifies your {{site.data.keyword.keymanagementserviceshort}} instance.
+    The {{site.data.keyword.cloud_notm}} instance ID that identifies your {{site.data.keyword.keymanagementserviceshort}} instance.
 
-   You can set an environment variable instead of specifying `-i` with the following command: **`$ export KP_INSTANCE_ID=<INSTANCE_ID>`**.
+    You can set an environment variable instead of specifying `-i` with the following command: **`$ export KP_INSTANCE_ID=<INSTANCE_ID>`**.
 
 ### Optional parameters
 {: #kp-import-token-create-opt-params}
 
 * **`-e, --expiration`**
 
-   Specify an expiration time (in seconds) for an import token. This value determines how long the import token and its associated public key remain valid for operations.
+    Specify an expiration time (in seconds) for an import token. This value determines how long the import token and its associated public key remain valid for operations.
 
-   The minimum value is `300` seconds (5 minutes), and the maximum value is `86400` seconds (24 hours). The default value is `600` seconds (10 minutes).
+    The minimum value is `300` seconds (5 minutes), and the maximum value is `86400` seconds (24 hours). The default value is `600` seconds (10 minutes).
 
 * **`-m, --max-retrievals`**
 
-   Set the use count for the import token. This value determines the number of times that the import token can be retrieved within its expiration time before it is no longer accessible. The default value is `1`.
+    Set the use count for the import token. This value determines the number of times that the import token can be retrieved within its expiration time before it is no longer accessible. The default value is `1`.
 
 ## kp import-token key-encrypt
 {: #kp-import-token-key-encrypt}
@@ -1835,7 +1835,7 @@ requires an authorization from two users. With the
 first authorization by
 [setting the key for deletion](/docs/key-protect?topic=key-protect-delete-dual-auth-keys#set-key-deletion-api).
 Then, a different user provides a second authorization by using the
-[GUI](https://{DomainName}/){: external}
+[GUI](/login/){: external}
 or
 [API](/apidocs/key-protect){: external}
 to delete the key.
