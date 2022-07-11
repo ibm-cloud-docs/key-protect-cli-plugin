@@ -22,7 +22,7 @@ subcollection: key-protect
 {:deprecated: .deprecated}
 
 # {{site.data.keyword.keymanagementserviceshort}} CLI Reference
-{: #cli-reference}
+{: #key-protect-cli-reference}
 
 The latest version of the {{site.data.keyword.keymanagementservicefull}} 
 CLI plug-in provides a safe and efficient way to manage keys in your instance 
