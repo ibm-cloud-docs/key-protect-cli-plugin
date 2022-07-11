@@ -21,7 +21,7 @@ subcollection: key-protect
 {:tip: .tip}
 {:deprecated: .deprecated}
 
-# {{site.data.keyword.keymanagementserviceshort}} CLI Command Reference
+# {{site.data.keyword.keymanagementserviceshort}} CLI Commands
 {: #cli-reference}
 
 The latest version of the {{site.data.keyword.keymanagementservicefull}} 
