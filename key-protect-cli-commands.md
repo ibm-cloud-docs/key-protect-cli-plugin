@@ -3175,6 +3175,11 @@ ibmcloud kp key versions KEY_ID_OR_ALIAS
 ```
 {: pre}
 
+### Examples
+{: #kp-key-versions-examples}
+
+These are examples of `kp key versions`.
+
 #### Example 1
 {: #kp-key-versions-example-1}
 
