@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2022
-lastupdated: "2022-07-11"
+lastupdated: "2022-07-15"
 
 keywords: Key Protect CLI plug-in, CLI reference, version 0.6.11
 
@@ -153,11 +153,14 @@ More commands for managing
 
 | Command                               | Status v0.6.11 | Description |
 | ------------------------------------- | ------------- | ----------- |
-| [kp keys](#kp-keys)                   |               | List the keys that are available in your {{site.data.keyword.keymanagementserviceshort}} instance |
+| [kp keys](#kp-keys)                   |    updated    | List the keys that are available in your {{site.data.keyword.keymanagementserviceshort}} instance |
 | [kp key-rings](#kp-key-rings)        |            | Lists the key rings associated with the kp instance |
 | [kp region-set](#kp-region-set)       |               | Target a different regional endpoint |
 | [kp registrations](#kp-registrations) |            | List associations between root keys and other cloud resources |
 {: caption="Table 5. Commands for managing other resources" caption-side="bottom"}
+
+[Key aliases](#kp-key-alias-create) can be used as identifiers for methods as shown in examples for [key create](#kp-key-create-example-7), [key disable](#kp-key-disable-example-3), and anywhere you see 'Key ID or Alias' supported here.
+{: note}
 
 ## Viewing help
 {: #kp-help}
@@ -1173,6 +1176,59 @@ $ echo $PAYLOAD | base64 -d
 ```
 {: screen}
 
+#### Example 7
+{: #kp-key-create-example-7}
+
+Create a root key with an alias, then use that alias to identify the key to show the key details.
+
+```sh
+# create a root key with an alias
+$ ibmcloud kp key create root-key-with-alias -a example-alias --output json
+
+{
+    "id": "b3660416-4186-4587-b528-484886a4731b",
+    "name": "root-key-with-alias",
+    "type": "application/vnd.ibm.kms.key+json",
+    "extractable": false,
+    "state": 1,
+    "aliases": [
+		"example-alias"
+	],
+	"keyRingID": "default",
+    "crn": "crn:v1:bluemix:public:kms:us-south:a/ea998d3389c3473aa0987652b46fb146:390086ac-76fa-4094-8cf3-c0829bd69526:key:b3660416-4186-4587-b528-484886a4731b",
+    "deleted": false
+}
+
+# show key details using the alias as identifier
+$ ibmcloud kp key show example-alias --output json
+
+{
+    "id": "b3660416-4186-4587-b528-484886a4731b",
+    "name": "root-key-with-alias",
+    "type": "application/vnd.ibm.kms.key+json",
+    "algorithmType": "AES",
+    "createdBy": "user id ...<redacted>...",
+    "creationDate": "2022-06-09T21:21:55Z",
+    "lastUpdateDate": "2022-06-09T21:21:55Z",
+    "keyVersion": {
+        "id": "264fadc3-7667-4b25-916e-5825fe70de0b",
+    "creationDate": "2022-06-09T21:21:55Z"
+    },
+    "aliases": [
+		"example-alias"
+	],
+	"keyRingID": "default",
+    "extractable": false,
+    "state": 1,
+    "crn": "crn:v1:bluemix:public:kms:us-south:a/ea998d3389c3473aa0987652b46fb146:390086ac-76fa-4094-8cf3-c0829bd69526:key:b3660416-4186-4587-b528-484886a4731b",
+    "deleted": false,
+    "dualAuthDelete": {
+		"enabled": false
+	}
+}
+```
+{: screen}
+
 ### Required parameters
 {: #kp-key-create-required}
 
@@ -1604,6 +1660,78 @@ kp.Error:
     msg='Conflict: Action could not be performed on key. Please see "reasons" for more details.',
     reasons='[KEY_ACTION_INVALID_STATE_ERR: Key is not in a valid state -
         FOR_MORE_INFO_REFER: https://cloud.ibm.com/apidocs/key-protect]'
+```
+{: screen}
+
+#### Example 3
+{: #kp-key-disable-example-3}
+
+Create a root key with an alias, use that alias to identify the key to be disabled, verify the key state (suspended), and enable the root
+key, and verify the key state (active).
+
+```sh
+# create a root key
+$ ibmcloud kp key create root-key-with-alias -a example-alias-1 --output json
+
+{
+    "id": "264fadc3-7667-4b25-916e-5825fe70de0b",
+    "name": "root-key-with-alias",
+    "type": "application/vnd.ibm.kms.key+json",
+    "extractable": false,
+    "state": 1,
+    "aliases": [
+		"example-alias"
+    ],
+    "deleted": false,
+    "crn": "crn:v1:bluemix:public:kms:us-south:a/ea998d3389c3473aa0987652b46fb146:390086ac-76fa-4094-8cf3-c0829bd69526:key:264fadc3-7667-4b25-916e-5825fe70de0b"
+}
+
+# show key details using the alias as identifier - a state of "1" is "active"
+$ ibmcloud kp key show example-alias-1 --output json
+
+{
+    "id": "264fadc3-7667-4b25-916e-5825fe70de0b",
+    "name": "root-key-with-alias",
+    "type": "application/vnd.ibm.kms.key+json",
+    "algorithmType": "AES",
+    "createdBy": "user id ...<redacted>...",
+    "creationDate": "2020-06-09T21:21:55Z",
+    "lastUpdateDate": "2020-06-09T21:21:55Z",
+    "keyVersion": {
+        "id": "264fadc3-7667-4b25-916e-5825fe70de0b",
+    "creationDate": "2020-06-09T21:21:55Z"
+    },
+    "extractable": false,
+    "state": 1,
+    ...
+    "crn": "crn:v1:bluemix:public:kms:us-south:a/ea998d3389c3473aa0987652b46fb146:390086ac-76fa-4094-8cf3-c0829bd69526:key:264fadc3-7667-4b25-916e-5825fe70de0b"
+}
+
+# disable the root key identified by alias
+$ ibmcloud kp key disable example-alias-1
+
+Disabling key: '264fadc3-7667-4b25-916e-5825fe70de0b', in instance: '390086ac-76fa-4094-8cf3-c0829bd69526'...
+OK
+
+# show key details - a state of "2" is "suspended"
+$ ibmcloud kp key show example-alias-1 --output json
+
+{
+    "id": "264fadc3-7667-4b25-916e-5825fe70de0b",
+    "name": "root-key-with-alias",
+    "type": "application/vnd.ibm.kms.key+json",
+    "algorithmType": "AES",
+    "createdBy": "user id ...<redacted>...",
+    "creationDate": "2020-06-09T21:21:55Z",
+    "lastUpdateDate": "2020-06-09T21:23:26Z",
+    "keyVersion": {
+        "id": "264fadc3-7667-4b25-916e-5825fe70de0b",
+    "creationDate": "2020-06-09T21:21:55Z"
+    },
+    "extractable": false,
+    "state": 2,
+    "crn": "crn:v1:bluemix:public:kms:us-south:a/ea998d3389c3473aa0987652b46fb146:390086ac-76fa-4094-8cf3-c0829bd69526:key:264fadc3-7667-4b25-916e-5825fe70de0b"
+}
 ```
 {: screen}
 
@@ -2946,6 +3074,63 @@ $ ibmcloud kp key show 8635b804-9966-4918-a16b-d561fdbf181f --output json
 
     A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
 
+## kp key sync
+{: #kp-key-sync}
+
+This subcommand synchronizes the associated resources for a key.
+
+```sh
+ibmcloud kp key sync KEY_ID
+     -i, --instance-id INSTANCE_ID
+    [--key-ring		     KEY_RING_ID]
+    [-o, --output      FORMAT]
+```
+{: pre}
+
+### Examples
+{: #kp-key-sync-examples}
+
+This is an example of `kp key sync`.
+
+#### Example
+{: #kp-key-sync-example}
+
+Synchronize a key and show the results.
+
+```sh
+# synchronize the associated resources for a given key
+$ ibmcloud kp key sync 94c06f9c-a07a-4961-8548-553cf7431f18
+
+Synchronizing key...
+OK
+Key's associated resources are synchronized successfully
+```
+{: screen}
+
+### Required parameters
+{: #kp-key-sync-required}
+
+* **`KEY_ID`**
+
+   The ID of the key that you want to sync.
+
+* **`-i, --instance-id`**
+
+   The {{site.data.keyword.cloud_notm}} instance ID that identifies your {{site.data.keyword.keymanagementserviceshort}} instance.
+
+   You can set an environment variable instead of specifying `-i` with the following command: **`$ export KP_INSTANCE_ID=<INSTANCE_ID>`**.
+
+### Optional parameters
+{: #kp-key-sync-optional}
+
+* **`-o, --output`**
+
+   Set the CLI output format. By default, all commands print in table format. To change the output format to JSON, use `--output json`.
+
+* **`--key-ring`**
+
+   A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
+
 ## kp key update
 {: #kp-key-update}
 
@@ -3600,12 +3785,14 @@ Keys are listed in `key id` order; see
 
 ```sh
 ibmcloud kp keys
-        -i, --instance-id     INSTANCE_ID
-        [--key-ring                KEY_RING_ID]
-    [-c, --crn]
-    [-n, --number-of-keys  NUMBER_OF_KEYS]
-    [-o, --output          OUTPUT]
-    [-s, --starting-offset STARTING_OFFSET
+        -i, --instance-id      INSTANCE_ID
+        [--key-ring            KEY_RING_ID]
+        [-c, --crn]
+        [--key-states          STATES]
+        [-n, --number-of-keys  NUMBER_OF_KEYS]
+        [-o, --output          OUTPUT]
+        [-s, --starting-offset STARTING_OFFSET]
+        [-t, --key-type        TYPE]
 ```
 {: pre}
 
@@ -3839,6 +4026,39 @@ done
 ```
 {: screen}
 
+#### Example 6
+{: #kp-keys-example-6}
+
+Lists the keys based on key states (`Active`, `Suspended`) in the {{site.data.keyword.keymanagementserviceshort}} instance.
+
+```sh
+# list all active and suspended keys
+$ ibmcloud kp keys -e active,suspended
+
+Retrieving keys...
+OK
+Key ID                                 Key Name
+ef2cc155-fe56-492c-845c-4d1f0688c7ba   my-active-key
+636e9f3a-feaf-4033-8603-687754dc7e51   my-suspended-key
+```
+{: screen}
+
+#### Example 7
+{: #kp-keys-example-7}
+
+Lists the keys based on key type (root) in the {{site.data.keyword.keymanagementserviceshort}} instance.
+
+```sh
+# list all root keys
+$ ibmcloud kp keys -t root
+
+Retrieving keys...
+OK
+Key ID                                 Key Name
+2f1cb135-fa16-40dc-815c-4d1f0ee8c7ba   my-root-key
+```
+{: screen}
+
 ### Required parameters
 {: #kp-keys-required}
 
@@ -3855,9 +4075,13 @@ done
 
     Include the cloud resource name (CRN) in the output.
 
-* **`-n, --number-of-keys`**
+* **`-s, --starting-offset`**
 
-    Restricts the number of keys retrieved. The default is 200 if no value is provided.
+    Retrieves keys starting at the offset specified. The offset is zero-based, meaning offset 0 (zero) is the first key.
+
+* **`--key-states`**
+
+    The state of the keys to be retrieved. List of strings containing valid states - `Active`, `Suspended`, `Deactivated`, `Destroyed`. (default: `active,suspended,deactivated`).
 
 * **`-o, --output`**
 
@@ -3865,13 +4089,17 @@ done
 
     Setting the output to JSON (`--output json`) includes the cloud resource name (CRN) in the output.
 
+* **`-r, --key-ring`**
+
+    A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
+
 * **`-s, --starting-offset`**
 
     Retrieves keys starting at the offset specified. The offset is zero-based, meaning offset 0 (zero) is the first key.
 
-* **`--key-ring`**
+* **`-t, --key-type`**
 
-    A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
+    The type of keys to be retrieved. If set to `standard-key`, standard keys will be retrieved. If set to `root-key`, root keys will be retrieved.
 
 ## kp region-set
 {: #kp-region-set}
@@ -3882,7 +4110,7 @@ endpoint.
 ```sh
 ibmcloud kp region-set REGION
         -i, --instance-id INSTANCE_ID
-    [-u, --unset]
+        [-u, --unset]
 ```
 {: pre}
 
@@ -3902,14 +4130,17 @@ $ ibmcloud kp region-set
 
 Select a Region:
 1. au-syd
-2. eu-de
-3. eu-fr2 (available by request)
-4. eu-gb
-5. jp-tok
-6. us-east
-7. us-south
-8. staging (us-south)
-Enter a number:
+2. ca-tor
+3. eu-de
+4. eu-fr2 (available by request)
+5. eu-gb
+6. jp-osa
+7. jp-tok
+8. us-east
+9. us-south
+10. br-sao
+11. staging (us-south)
+Enter a number: 
 5
 OK
 ```
