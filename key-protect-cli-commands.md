@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2022
-lastupdated: "2022-09-22"
+lastupdated: "2022-09-28"
 
 keywords: Key Protect CLI plug-in, CLI reference, version 0.6.12
 
@@ -459,15 +459,16 @@ LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0t ...<redacted>... QyBLRVktLS0tLQo=
 ## kp instance policies
 {: #kp-instance-policies}
 
-Retrieve details about instance policies, such as allowed networks
-(public-and-private or private-only) and dual authorization delete (deleting a
-key requires an authorization from two users).
+Retrieve details about instance policies, such as `allowed networks` (`public-and-private` or `private-only`), `allowed IP` policies, `key create import` access, metrics, and dual-authorization delete (deleting a key requires an authorization from two users).
 
 ```sh
 ibmcloud kp instance policies
         -i, --instance-id     INSTANCE_ID
+    [-p, --allowed-ip]
     [-a, --allowed-network]
     [-d, --dual-auth-delete]
+    [-k, --key-create-import-access]
+    [-m, --metrics]
     [-o, --output          OUTPUT]
 ```
 {: pre}
@@ -545,6 +546,10 @@ $ ibmcloud kp instance policies --output json
 ### Optional parameters
 {: #kp-instance-policies-optional}
 
+* **`-p, --allowed-ip`**
+
+    Show the instance policy for "allowed ip".
+
 * **`-a, --allowed-network`**
 
     Show the instance policy for "allowed network".
@@ -552,6 +557,14 @@ $ ibmcloud kp instance policies --output json
 * **`-d, --dual-auth-delete`**
 
     Show the instance policy for "dual authorization delete".
+
+* **`-k, --key-create-import-access`**
+
+    Retrieves the key create import access policy details of the instance.
+
+* **`-m, --metrics`**
+
+    Retrieves the metrics policy details of the instance.
 
 * **`-o, --output`**
 
@@ -4277,7 +4290,7 @@ recovery from this action.
 ```sh
 ibmcloud kp registrations
         -i, --instance-id INSTANCE_ID
-    [--key-ring             KEY_RING_ID]
+    [-r, --key-ring    KEY_RING_ID]
     [-c, --crn-query   CRN_PATTERN]
     [-k, --key-id      KEY_ID_OR_ALIAS]
     [-o, --output      OUTPUT]
@@ -4703,7 +4716,7 @@ No service instance found.
 
     Setting the output to JSON (`--output json`) includes the cloud resource name (CRN) in the output.
 
-* **`--key-ring`**
+* **`-r, --key-ring`**
 
     A unique, human readable name for the key-ring. Required to show registrations on the given key ring.
 
