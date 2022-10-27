@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2022
-lastupdated: "2022-09-28"
+lastupdated: "2022-10-27"
 
 keywords: Key Protect CLI plug-in, CLI reference, version 0.6.12
 
@@ -1279,6 +1279,119 @@ $ ibmcloud kp key show example-alias --output json
 * **`-o, --output`**
 
     Set the CLI output format. By default, all commands print in table format. To change the output format to JSON, use `--output json`.
+
+* **`-s, --standard-key`**
+
+    Set the parameter only if you want to create a [standard key](/docs/key-protect?topic=key-protect-envelope-encryption#key-types). To create a root key, omit the `--standard-key` parameter.
+
+* **`-v, --iv`**
+
+    **Used with import tokens.** The initialization vector (IV) that is generated when you encrypt a nonce. The IV value is required to decrypt the encrypted nonce value that you provide when you make a key import request to the service.
+
+    To generate an IV, encrypt the nonce by running `ibmcloud kp import-token nonce-encrypt`.
+
+* **`--key-ring`**
+
+    A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
+
+## kp key create-key-with-policy-overrides
+{: #kp-key-create-override}
+
+Create a key with policies for only the named key that will override any applicable instance policies.
+
+```sh
+ibmcloud kp key create-key-with-policy-overrides KEY_NAME
+    -i, --instance-id                         INSTANCE_ID
+    [-a, --aliases                            ALIAS]
+    [-d, --dual-auth-delete-policy-enabled    KEY_RING_ID]
+    [--key-ring                               KEY_RING_ID]
+    [-k, --key-material                       KEY_MATERIAL]
+    [-m, --rotation-interval-month            VALUE]
+    [-n, --encrypted-nonce                    NONCE]
+    [-o, --output                             OUTPUT]
+    [-s, --standard-key]
+    [-v, --iv                                 IV]
+```
+{: pre}
+
+### Example
+{: #kp-key-create-override-example}
+
+Create a root key that enables a rotation policy with an interval of 2 months (each "month" is valued at 30 days, resulting in a 60-day rotation interval).
+
+```sh
+% ibmcloud kp key create-key-with-policy-overrides test-key -m 2 -r
+Creating key with policy overrides: 'test-key', in instance: '47377f07-8721-2O47-f396-ef1982c1e96e'...
+
+OK
+Key ID                                 Key Name   
+076df396-4c90-e008-bf20-f1bb672d465b   test-key
+
+# List policies
+% ibmcloud kp key policies 076df396-4c90-e008-bf20-f1bb672d465b
+Retrieving policy details for key ID: 076df396-4c90-e008-bf20-f1bb672d465b...
+OK
+                   
+Created By      IBMid-xxxxnnnnnxxx   
+Creation Date   2022-10-27T17:48:20Z   
+Last Updated    2022-10-27T17:48:20Z   
+Updated By      IBMid-xxxxnnnnnxxx   
+Policy Type     Rotation   
+Interval        2   
+Enabled         true
+
+```
+{: screen}
+
+### Required parameters
+{: #kp-key-create-override-required}
+
+* **`KEY_NAME`**
+
+    A unique, human-readable identifier to assign to your key.
+
+* **`-i, --instance-ID`**
+
+    The {{site.data.keyword.cloud_notm}} instance ID that identifies your {{site.data.keyword.keymanagementserviceshort}} instance.
+
+    You can set an environment variable instead of specifying `-i` with the following command: **`$ export KP_INSTANCE_ID=<INSTANCE_ID>`**.
+
+### Optional parameters
+{: #kp-key-create-override-optional}
+
+* **`-a, --aliases`**
+
+    Alphanumeric human-readable alias names ranging 2-90 characters assigned to your key. Alias cannot contain spaces or special characters other than underscores and dashes. A maximum of 5 aliases are allowed per key.
+
+* **`-d, --dual-auth-delete-policy-enabled`**
+
+Enables the dual auth delete policy for a key.
+
+* **`-k, --key-material`**
+
+    If you generated a key then this is the base64-encoded key material that you store and manage in the service.
+
+    Root keys must be 16, 24, or 32 bytes long; corresponding to 128, 192, or 256 bits. The key must be base64-encoded.
+
+    Standard keys can be up to 7,500 bytes in size. The key must be base64-encoded.
+
+    If you are creating a key using an import token then this is the encrypted key from the `kp import-token key-encrypt` process.
+
+    To generate a new key, omit the `-k, --key-material` parameter.
+
+* **`-n, --encrypted-nonce`**
+
+    **Used with import tokens.** The encrypted nonce value that verifies your request to import a key to {{site.data.keyword.keymanagementserviceshort}}. This value must be encrypted by using the key material that you import into the service. See `ibmcloud kp import-token --help`.
+
+    To retrieve a nonce, use `ibmcloud kp import-token show`. Then, encrypt the value by running `ibmcloud kp import-token nonce-encrypt`.
+
+* **`-o, --output`**
+
+    Set the CLI output format. By default, all commands print in table format. To change the output format to JSON, use `--output json`.
+
+* **`-m, --rotation-interval-month`**
+
+Specify the rotation time interval (in months) for a key. The default value is `-1`.
 
 * **`-s, --standard-key`**
 
@@ -3798,9 +3911,10 @@ Keys are listed in `key id` order; see
 ```sh
 ibmcloud kp keys
         -i, --instance-id      INSTANCE_ID
-        [--key-ring            KEY_RING_ID]
         [-b --sort-by          SORT_BY] 
         [-c, --crn]
+        [-f, --key-filter      FILTERS]
+        [--key-ring            KEY_RING_ID]
         [--key-states          STATES]
         [-l --key-search       KEY_SEARCH] 
         [-n, --number-of-keys  NUMBER_OF_KEYS]
@@ -4106,8 +4220,6 @@ ef2cc155-fe56-492c-845c-4d1f0688c7ba   my-last-key
 ```
 {: screen}
 
-
-
 ### Required parameters
 {: #kp-keys-required}
 
@@ -4137,6 +4249,27 @@ ef2cc155-fe56-492c-845c-4d1f0688c7ba   my-last-key
 * **`-c, --crn`**
 
     Include the cloud resource name (CRN) in the output.
+
+* **`-f, --key-filter`**
+
+    Filter the keys based on the parameters. The supported key filtering parameters are 
+
+	- creationDate
+	- deletionDate
+	- expirationDate
+	- extractable
+	- lastUpdateDate 
+	- lastRotateDate
+	- state
+	
+	The supporting operators for dates are:
+	
+	- gt (greater than)
+	- gte (greater than or equal to)
+	- lt (less than)
+	- lte (less than or equal to)
+	
+	The results will be an exact match in case any of these operators are missing.
 
 * **`--key-states`**
 
