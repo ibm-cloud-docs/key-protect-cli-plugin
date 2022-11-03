@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2022
-lastupdated: "2022-10-27"
+lastupdated: "2022-11-02"
 
 keywords: Key Protect CLI plug-in, CLI reference, version 0.6.12
 
@@ -24,9 +24,7 @@ subcollection: key-protect
 # {{site.data.keyword.keymanagementserviceshort}} CLI Reference
 {: #key-protect-cli-reference}
 
-The latest version of the {{site.data.keyword.keymanagementservicefull}} 
-CLI plug-in provides a safe and efficient way to manage keys in your instance 
-of {{site.data.keyword.keymanagementserviceshort}}.
+The latest version of the {{site.data.keyword.keymanagementservicefull}}  CLI plug-in provides a safe and efficient way to manage keys in your instance of {{site.data.keyword.keymanagementserviceshort}}.
 {: shortdesc}
 
 When you log in to the
