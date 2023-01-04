@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2022
-lastupdated: "2022-11-02"
+lastupdated: "2022-12-12"
 
 keywords: Key Protect CLI plug-in, CLI reference, version 0.6.12
 
@@ -468,6 +468,7 @@ ibmcloud kp instance policies
     [-k, --key-create-import-access]
     [-m, --metrics]
     [-o, --output          OUTPUT]
+    [  -r, --rotation]
 ```
 {: pre}
 
@@ -567,6 +568,10 @@ $ ibmcloud kp instance policies --output json
 * **`-o, --output`**
 
     Set the CLI output format. By default, all commands print in table format. To change the output format to JSON, use `--output json`.
+
+* **`-r, --rotation`**
+
+    Retrieves rotation policy details of the instance.
 
 ## kp instance policy-update allowed-network
 {: #kp-instance-policy-update-allowed}
@@ -2270,7 +2275,7 @@ kp.Error:
 
 When you set an automatic rotation policy for a root key, you shorten the
 lifetime of the key at regular intervals, and you limit the amount of
-information that is protected by that key.
+information that is protected by that key. Users can also enable or disable the key rotation policy on a key.
 
 You can only create a rotation policy for root keys that are generated in
 {{site.data.keyword.keymanagementserviceshort}}. If you imported the root key
@@ -2280,74 +2285,123 @@ For more information, see
 {: note}
 
 ```sh
-ibmcloud kp key policy-update rotation KEY_ID_OR_ALIAS
-        -i, --instance-id      INSTANCE_ID
-    [-m, --monthly-interval MONTHS]
-    [-o, --output           OUTPUT]
+ibmcloud kp key policy-update rotation KEY_ID|KEY_ALIAS 
+[--enable | --disable] [-m MONTHLY_INTERVAL] [-o FORMAT]
+[--key-ring KEY_RING_ID]
 ```
 {: pre}
 
-### Example
+### Examples
 {: #kp-key-policy-update-rotation-example}
 
-This example applies a policy to rotate the key every 2 months.
+Rotation policies can be applied at key creation time or after a key has been created. In the first example, we simply create the key without a rotation policy:
 
 ```sh
 # create a root key
-$ KEY_ID=$(ibmcloud kp key create my-root-key --output json | jq -r '.["id"]')
 
-$ echo $KEY_ID
+ibmcloud kp key create rotateKeyEnableDisableDemo
 
-c024c2b3-2093-46e5-aabb-fdf8cbc14e44
+Creating key: 'rotateKeyEnableDisableDemo', in instance: '5ecfe306-d4at-48c0-ab07-b5c5bc751534'...
+OK
+Key ID                                 Key Name   
+4d5540bd-3235-4a46-a8af-974f7ed6558a   rotateKeyEnableDisableDemo   
+---------------------------------------------------------------------------------------------------------------------------------------------------
+```
 
-# show key details
-$ ibmcloud kp key show $KEY_ID --output json
+```sh
+# set a rotation policy of three months
 
-{
-    "id": "c024c2b3-2093-46e5-aabb-fdf8cbc14e44",
-    "name": "my-root-key",
-    "type": "application/vnd.ibm.kms.key+json",
-    "algorithmType": "AES",
-    "createdBy": "user id ...<redacted>...",
-    "creationDate": "2020-06-18T20:34:39Z",
-    "lastUpdateDate": "2020-06-18T20:34:39Z",
-    "keyVersion": {
-        "id": "c024c2b3-2093-46e5-aabb-fdf8cbc14e44",
-    "creationDate": "2020-06-18T20:34:39Z"
-    },
-    "extractable": false,
-    "state": 1,
-    "crn": "crn:v1:bluemix:public:kms:us-south:a/ea998d3389c3473aa0987652b46fb146:a192d603-0b8d-452f-aac3-f9e1f95e7411:key:c024c2b3-2093-46e5-aabb-fdf8cbc14e44"
-}
-
-# update the policy and rotate the key every 2 months
-$ ibmcloud kp key policy-update rotation $KEY_ID -m 2 --output json
+ibmcloud kp key policy-update rotation 4d5540bd-3235-4a46-a8af-974f7ed6558a -m 3 -e --output json
 
 {
-    "createdBy": "user id ...<redacted>...",
-    "creationDate": "2020-06-18T20:35:41Z",
-    "crn": "crn:v1:bluemix:public:kms:us-south:a/ea998d3389c3473aa0987652b46fb146:a192d603-0b8d-452f-aac3-f9e1f95e7411:policy:06a40fd6-6fd7-460a-87d7-8388fc1be057",
-    "lastUpdateDate": "2020-06-18T20:35:41Z",
-    "updatedBy": "user id ...<redacted>...",
-    "rotation": {
-        "interval_month": 2
-      }
+        "createdBy": "user id ...<redacted>...",
+        "creationDate": "2022-12-02T00:50:11Z",
+        "crn": "crn:v1:bluemix:public:kms:us-south:a/e3e8fd14a61a49cda102faad15b06c09:5ecfe306-d4af-48c0-ab07-b5c5bc751534:policy:0ec7ad62-982d-45bb-895f-986d95015f5b",
+        "lastUpdateDate": "2022-12-02T00:51:38Z",
+        "updatedBy": "user id ...<redacted>...",
+        "rotation": {
+                "enabled": true,
+                "interval_month": 3
+        }
 }
+---------------------------------------------------------------------------------------------------------------------------------------------------
+```
 
-# list the policies
-$ ibmcloud kp key policies $KEY_ID --output json
+```sh
+# show the rotation policy for this key
 
-[
-  {
-    "createdBy": "user id ...<redacted>...",
-    "creationDate": "2020-06-18T20:35:41Z",
-    "crn": "crn:v1:bluemix:public:kms:us-south:a/ea998d3389c3473aa0987652b46fb146:a192d603-0b8d-452f-aac3-f9e1f95e7411:policy:06a40fd6-6fd7-460a-87d7-8388fc1be057",
-    "lastUpdateDate": "2020-06-18T20:35:41Z",
-    "updatedBy": "user id ...<redacted>...",
-    "rotation": { "interval_month": 2
-    }
-  }
-]
+ibmcloud kp key policies 4d5540bd-3235-4a46-a8af-974f7ed6558a -r --output json
+
+{
+        "createdBy": "user id ...<redacted>...",
+        "creationDate": "2022-12-02T00:50:11Z",
+        "crn": "crn:v1:bluemix:public:kms:us-south:a/e3e8fd14a61a49cda102faad15b06c09:5ecfe306-d4af-48c0-ab07-b5c5bc751534:policy:0ec7ad62-982d-45bb-895f-986d95015f5b",
+        "lastUpdateDate": "2022-12-02T00:51:38Z",
+        "updatedBy": "user id ...<redacted>...",
+        "rotation": {
+                "enabled": true,
+                "interval_month": 2
+        }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+```sh
+# update the policy to three months
+
+ibmcloud kp key policy-update rotation 4d5540bd-3235-4a46-a8af-974f7ed6558a -m 3 -e --output json
+
+{
+        "createdBy": "user id ...<redacted>...",
+        "creationDate": "2022-12-02T00:50:11Z",
+        "crn": "crn:v1:bluemix:public:kms:us-south:a/e3e8fd14a61a49cda102faad15b06c09:5ecfe306-d4af-48c0-ab07-b5c5bc751534:policy:0ec7ad62-982d-45bb-895f-986d95015f5b",
+        "lastUpdateDate": "2022-12-02T00:51:38Z",
+        "updatedBy": "user id ...<redacted>...",
+        "rotation": {
+                "enabled": true,
+                "interval_month": 3
+        }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+
+```sh
+# disable the policy for this key
+
+ibmcloud kp key policy-update rotation 4d5540bd-3235-4a46-a8af-974f7ed6558a -d --output json
+
+{
+        "createdBy": "user id ...<redacted>...",
+        "creationDate": "2022-12-02T00:50:11Z",
+        "crn": "crn:v1:bluemix:public:kms:us-south:a/e3e8fd14a61a49cda102faad15b06c09:5ecfe306-d4af-48c0-ab07-b5c5bc751534:policy:0ec7ad62-982d-45bb-895f-986d95015f5b",
+        "lastUpdateDate": "2022-12-02T00:52:52Z",
+        "updatedBy": "user id ...<redacted>...",
+        "rotation": {
+                "enabled": false,
+                "interval_month": 3
+        }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+```sh
+# show that the policy has been disabled
+
+ibmcloud kp key policies 4d5540bd-3235-4a46-a8af-974f7ed6558a -r --output json
+
+{
+        "createdBy": "user id ...<redacted>...",
+        "creationDate": "2022-12-02T00:50:11Z",
+        "crn": "crn:v1:bluemix:public:kms:us-south:a/e3e8fd14a61a49cda102faad15b06c09:5ecfe306-d4af-48c0-ab07-b5c5bc751534:policy:0ec7ad62-982d-45bb-895f-986d95015f5b",
+        "lastUpdateDate": "2022-12-02T00:52:52Z",
+        "updatedBy": "user id ...<redacted>...",
+        "rotation": {
+                "enabled": false,
+                "interval_month": 3
+        }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 {: screen}
 
@@ -2364,8 +2418,11 @@ $ ibmcloud kp key policies $KEY_ID --output json
 
 * **`-m, --monthly-interval`**
 
-    Set the key rotation interval in months. The deault is 1 (one) month. The
-    rotation interval must be 1 to 12 months.
+    Set the key rotation interval in months. The rotation interval must be 1 to 12 months.
+
+* **`-e, --enable` or `-d, --disable`**
+
+    By default, key rotation policy is enabled. If user wants to disable or enable the policy, they can use -d(--disable) or -e(--enable) respectively.
 
 * **`-o, --output`**
 
