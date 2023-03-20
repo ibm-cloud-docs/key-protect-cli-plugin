@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2023
-lastupdated: "2023-01-19"
+lastupdated: "2023-03-20"
 
 keywords: Key Protect CLI plug-in, CLI reference, version 0.6.12
 
@@ -4388,14 +4388,13 @@ Select a Region:
 1. au-syd
 2. ca-tor
 3. eu-de
-4. eu-fr2 (available by request)
-5. eu-gb
-6. jp-osa
-7. jp-tok
-8. us-east
-9. us-south
-10. br-sao
-11. staging (us-south)
+4. eu-gb
+5. jp-osa
+6. jp-tok
+7. us-east
+8. us-south
+9. br-sao
+10. staging (us-south)
 Enter a number: 
 5
 OK
