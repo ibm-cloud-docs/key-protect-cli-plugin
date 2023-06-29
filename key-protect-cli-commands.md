@@ -2,9 +2,9 @@
 
 copyright:
   years: 2017, 2023
-lastupdated: "2023-01-19"
+lastupdated: "2023-06-28"
 
-keywords: Key Protect CLI plug-in, CLI reference, version 0.6.12
+keywords: Key Protect CLI plug-in, CLI reference, version 0.8
 
 subcollection: key-protect
 
@@ -45,7 +45,7 @@ The example showing how to use [**`region-set`**](#kp-region-set-examples) outli
 ### Previous versions
 {: #cli-reference-previous}
 
-This documentation for version 0.6.12 does not include deprecated commands.
+This documentation for version 0.8 does not include deprecated commands.
 
 [Version 0.3.9](/docs/key-protect?topic=key-protect-cli-reference-039)
 has documentation for deprecated commands.
@@ -83,7 +83,7 @@ $ export KP_INSTANCE_ID=<INSTANCE_ID>
 
 The **`kp import-token`** command prepares a root key for secure import.
 
-| Sub-command                                     | Status v0.7.0 | Description |
+| Sub-command                                     | Status v0.8   | Description |
 | ----------------------------------------------- | ------------- | ----------- |
 | [create](#kp-import-token-create)               |               | Create an import token |
 | [key-encrypt](#kp-import-token-key-encrypt)     |         | Encrypt the key that you import into the service |
@@ -97,7 +97,7 @@ The **`kp import-token`** command prepares a root key for secure import.
 The **`kp instance`** command manages policies for a
 {{site.data.keyword.keymanagementserviceshort}} instance.
 
-| Sub-command                                                         | Status v0.7.0 | Description |
+| Sub-command                                                         | Status v0.8   | Description |
 | ------------------------------------------------------------------- | ------------- | ----------- |
 | [policies](#kp-instance-policies)                                   |               | List policies associated with an instance |
 | policy-update [allowed-network](#kp-instance-policy-update-allowed) |               | Update the instance policy for "allowed network" |
@@ -110,7 +110,7 @@ The **`kp instance`** command manages policies for a
 
 The **`kp key`** command manages individual keys.
 
-| Sub-command                                                  | Status v0.7.0 | Description |
+| Sub-command                                                  | Status v0.8   | Description |
 | ------------------------------------------------------------ | ------------- | ----------- |
 | [alias-create](#kp-key-alias-create)                         |               | Create an alias for a unique and convenient reference to a key |
 | [cancel-delete](#kp-key-cancel-delete)                       |               | Cancel a previously scheduled request to delete a key |
@@ -129,7 +129,7 @@ The **`kp key`** command manages individual keys.
 | [sync](#kp-key-sync)                                         |               | Synchronize a key's associated resources |
 | [unwrap](#kp-key-unwrap)                                     |               | Unwrap a data encryption key |
 | [update](#kp-key-update)                                     |               | Update a key, transferring it to a new key ring |
-| [versions](#kp-key-versions)                                 |               | List all key versions  |
+| [versions](#kp-key-versions)                                 | updated       | List all key versions  |
 | [wrap](#kp-key-wrap)                                         |               | Wrap a data encryption key |
 {: caption="Table 3. Sub-commands for managing keys" caption-side="bottom"}
 
@@ -138,7 +138,7 @@ The **`kp key`** command manages individual keys.
 
 Key Ring support allows for managing groups of keys for best practices using **`kp key-ring`**.
 
-| Sub-command                                                  | Status v0.7.0 | Description |
+| Sub-command                                                  | Status v0.8   | Description |
 | ------------------------------------------------------------ | ------------- | ----------- |
 | [create](#kp-key-ring-create)                       |     | Creates a key ring within a kp instance |
 | [delete](#kp-key-ring-delete)                       |     | Deletes a key ring within a kp instance |
@@ -150,9 +150,9 @@ Key Ring support allows for managing groups of keys for best practices using **`
 More commands for managing
 {{site.data.keyword.keymanagementserviceshort}} resources could support best practices.
 
-| Command                               | Status v0.7.0 | Description |
+| Command                               | Status v0.8   | Description |
 | ------------------------------------- | ------------- | ----------- |
-| [kp keys](#kp-keys)                   |    updated    | List the keys that are available in your {{site.data.keyword.keymanagementserviceshort}} instance |
+| [kp keys](#kp-keys)                   |               | List the keys that are available in your {{site.data.keyword.keymanagementserviceshort}} instance |
 | [kp key-rings](#kp-key-rings)        |            | Lists the key rings associated with the kp instance |
 | [kp region-set](#kp-region-set)       |               | Target a different regional endpoint |
 | [kp registrations](#kp-registrations) |            | List associations between root keys and other cloud resources |
@@ -3538,6 +3538,7 @@ ibmcloud kp key versions KEY_ID_OR_ALIAS
     [-o, --output                  OUTPUT]
     [-s, --starting-offset         OFFSET]
     [-t, --total-count             TOTAL_COUNT]
+    [-a, --all-key-states          ALL_KEY_STATES]
 
 ```
 {: pre}
@@ -3703,6 +3704,38 @@ $ ibmcloud kp key versions 807eb0a6-cc10-4bfe-8331-41a6f712c4ea -n 12 -s 12 -o j
 
 ```
 
+#### Example 5
+{: #kp-key-versions-example-5}
+
+An optional flag to return the number of versions of a key that is not currently active. Previously, the command would have failed, as in the following example:
+
+```sh
+# Attempt to show version count
+$ ibmcloud kp key versions af61298c-d75d-42a8-aa76-e04178cf4685 -i 99980ccc-d482-4cd0-bb41-deb4f7f1eb92 -t
+
+Retrieving key Versions...
+FAILED
+KEY_ACTION_INVALID_STATE_ERR
+Key is not in a valid state
+Correlation-ID:a494bf49-be82-426f-88d8-17b58cc8634d
+```
+
+With CLI version 0.8.0 and higher, the command succeeds when adding the `-a` flag, as in the following example:
+
+```sh
+# Attempt to show version count
+$ ibmcloud kp key versions af61298c-d75d-42a8-aa76-e04178cf4685 -i 99980ccc-d482-4cd0-bb41-deb4f7f1eb92 -t -a
+
+Retrieving key Versions...
+OK
+TotalCount: 2
+Key Version ID                         Creation Date
+14dfde20-a751-4c3e-b6b0-e8d00a17d8d1   2023-06-22T15:16:09Z
+af61298c-d75d-42a8-aa76-e04178cf4685   2023-06-22T15:10:28Z
+```
+
+Note that if the `-a` flag is not given, the `KEY_ACTION_INVALID_STATE_ERR` is still returned for a key in a state other than active.
+
 ### Required parameters
 {: #kp-key-versions-required}
 
@@ -3738,6 +3771,10 @@ $ ibmcloud kp key versions 807eb0a6-cc10-4bfe-8331-41a6f712c4ea -n 12 -s 12 -o j
 * **`-t --total-count`**
 
     Used to reterieve total number of key versions for a key by the supplied integer value.
+
+* **`-a --all-key-states`**
+
+    An optional flag to return the number of versions for all key states, including keys that are not active.
 
 ## kp key wrap
 {: #kp-key-wrap}
@@ -4388,14 +4425,13 @@ Select a Region:
 1. au-syd
 2. ca-tor
 3. eu-de
-4. eu-fr2 (available by request)
-5. eu-gb
-6. jp-osa
-7. jp-tok
-8. us-east
-9. us-south
-10. br-sao
-11. staging (us-south)
+4. eu-gb
+5. jp-osa
+6. jp-tok
+7. us-east
+8. us-south
+9. br-sao
+10. staging (us-south)
 Enter a number: 
 5
 OK
