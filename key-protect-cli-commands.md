@@ -2,7 +2,7 @@
 
 copyright:
   years: 2017, 2023
-lastupdated: "2023-06-28"
+lastupdated: "2023-10-16"
 
 keywords: Key Protect CLI plug-in, CLI reference, version 0.8
 
@@ -986,6 +986,7 @@ ibmcloud kp key create KEY_NAME
     [-o, --output          OUTPUT]
     [-s, --standard-key]
     [-v, --iv              IV]
+    [-D, --description     DESCRIPTION]
 ```
 {: pre}
 
@@ -1246,6 +1247,16 @@ $ ibmcloud kp key show example-alias --output json
 ```
 {: screen}
 
+#### Example 8
+{: #kp-key-create-example-8}
+
+Add a description to a key. For example, a short phrase used to describe the intended purpose of the key.
+
+```
+ibmcloud kp key create KEY_NAME -i 40f2a13c-780e-4641-bea5-e166e5bb5a9f -D ""description of the key""
+```
+{: pre}
+
 ### Required parameters
 {: #kp-key-create-required}
 
@@ -1297,6 +1308,10 @@ $ ibmcloud kp key show example-alias --output json
 * **`--key-ring`**
 
     A unique, human readable name for the key-ring. Required if the user doesn't have permissions on the default key ring.
+
+* **`-D, --description`**
+
+    Allows a description to be added to the key. For example, a short phrase used to describe the intended purpose of the key.
 
 ## kp key create-key-with-policy-overrides
 {: #kp-key-create-override}
@@ -2807,10 +2822,10 @@ Delete a key ring within a kp instance.
 ### Example
 {: #kp-key-ring-delete-example}
 
-The example shows the use of the CLI plugin to delete a key ring in the given instance.
+The example shows the use of the CLI plugin to delete a key ring in the given instance. Note that the force (`-f`) has been added.
 
 ```sh
-ibmcloud kp key-ring delete KEY_RING_ID -i <INSTANCE_ID>
+ibmcloud kp key-ring delete KEY_RING_ID -i <INSTANCE_ID> -f
 ```
 {: pre}
 
@@ -2826,6 +2841,13 @@ ibmcloud kp key-ring delete KEY_RING_ID -i <INSTANCE_ID>
     The {{site.data.keyword.cloud_notm}} instance ID that identifies your {{site.data.keyword.keymanagementserviceshort}} instance.
 
     You can set an environment variable instead of specifying `-i` with the following command: **`$ export KP_INSTANCE_ID=<INSTANCE_ID>`**.
+
+### Optional parameters
+{: #kp-key-ring-delete-optional}
+
+* **`-f, --force`**
+
+    Force deletes a key ring that still has keys in the _Destroyed_ state. Does not delete key rings that have keys in any other state. If a key ring contains keys in the _Destroyed_ state and this flag is not added, the key ring delete fails.
 
 ## kp key rotate
 {: #kp-key-rotate}
